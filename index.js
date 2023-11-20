@@ -126,6 +126,25 @@ async function run() {
       const result = await menuCollection.find().toArray()
       res.send(result)
     })
+    
+    app.get('/menu/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await menuCollection.findOne(query);
+      res.send(result);
+    })
+
+    app.delete('/menu/:id',verifyToken, verifyAdmin,async(req,res)=>{
+      const id=req.params.id;
+      const query={_id : new ObjectId(id)}
+      const result=await menuCollection.deleteOne(query)
+      res.send(result)
+    })
+    app.post('/menu',verifyToken,verifyAdmin, async (req, res) => {
+      const menuItem=req.body
+      const result = await menuCollection.insertOne(menuItem)
+      res.send(result)
+    })
     app.get('/reviews', async (req, res) => {
       const result = await reviewsCollection.find().toArray()
       res.send(result)
@@ -144,14 +163,8 @@ async function run() {
 
       res.send(result);
     })
-    // delete item form cart
-    // app.delete('/bashboard/cart/:id',async(req,res)=>{
-    //   const id=req.params.id;
-    //   const query={_id : new ObjectId(id)}
-    //   const result= await cartsCollection.deleteOne(query)
-    //   res.send(result)
-
-    // })
+ 
+   
     app.delete('/carts/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
